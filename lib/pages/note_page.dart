@@ -35,6 +35,10 @@ class _NotePageState extends State<NotePage> {
     contentController.text = widget.note.content;
     super.initState();
   }
+
+
+
+  
   
 
   void goToPage(Widget page) {

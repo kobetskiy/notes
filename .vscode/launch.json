@@ -5,21 +5,11 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "notes_test",
-            "request": "launch",
-            "type": "dart"
-        },
-        {
-            "name": "notes_test (profile mode)",
-            "request": "launch",
+            "name": "Flutter",
             "type": "dart",
-            "flutterMode": "profile"
-        },
-        {
-            "name": "notes_test (release mode)",
             "request": "launch",
-            "type": "dart",
-            "flutterMode": "release"
+            "program": "lib/main.dart"
         }
+
     ]
 }

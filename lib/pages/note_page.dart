@@ -1,10 +1,7 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import '../components/logger.dart';
-import '../config/colors.dart';
 import '../models/view.dart';
 import '../widgets/view.dart';
 
@@ -38,6 +35,7 @@ class _NotePageState extends State<NotePage> {
     contentController.text = widget.note.content;
     super.initState();
   }
+  
 
   void goToPage(Widget page) {
     Navigator.push(
@@ -68,16 +66,12 @@ class _NotePageState extends State<NotePage> {
     setState(() {
       if (titleController.text != widget.note.title ||
           contentController.text != widget.note.content) {
-        noteData.updateNote(widget.note, titleController.text,
-            contentController.text, newDate());
-
-        // noteData.deleteNote(widget.note.id);
-        // noteData.addNewNote(widget.note);
-
-        // noteData
-        //     .getAllNotes()
-        //     .insert(noteData.getAllNotes().length, noteData.getAllNotes()[0]);
-        // log.i(noteData.getAllNotes());
+        // update data
+        noteData.updateNote(widget.note, titleController.text, contentController.text, newDate());
+        
+        // put updated note in top of the list
+        noteData.deleteNote(widget.note);
+        noteData.addNewNote(widget.note);
 
         Navigator.maybePop(context);
         titleController.clear();
@@ -87,6 +81,7 @@ class _NotePageState extends State<NotePage> {
       titleController.clear();
       contentController.clear();
     });
+
   }
 
   void onPressed() {
@@ -94,60 +89,63 @@ class _NotePageState extends State<NotePage> {
       if (contentController.text != '' && titleController.text == '') {
         showDialog(
           context: context,
-          builder: (context) => AlertDialogWidget(
-            height: 170,
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                children: [
-                  const SizedBox(height: 10),
-                  Center(
-                    child: Text('WARNING',
-                        style: Theme.of(context).textTheme.titleMedium),
-                  ),
-                  const SizedBox(height: 10),
-                  Center(
-                    child: Text(
-                      'You can\'t save a note without title.\nPlease, set name to the title',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium!
-                          .copyWith(color: Colors.grey[300]),
-                      textAlign: TextAlign.center,
+          builder: (context) => BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
+            child: AlertDialogWidget(
+              height: 170,
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 10),
+                    Center(
+                      child: Text('WARNING',
+                          style: Theme.of(context).textTheme.titleMedium),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  Container(
-                    width: 150,
-                    height: 45,
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.bottomLeft,
-                        end: Alignment.topRight,
-                        colors: [Color(0xFF4B7BFF), Color(0xFF46D9FF)],
+                    const SizedBox(height: 10),
+                    Center(
+                      child: Text(
+                        'You can\'t save a note without title.\nPlease, set name to the title',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium!
+                            .copyWith(color: Colors.grey[300]),
+                        textAlign: TextAlign.center,
                       ),
-                      borderRadius: BorderRadius.all(Radius.circular(12)),
                     ),
-                    child: ElevatedButton(
-                      onPressed: () => Navigator.pop(context, false),
-                      style: ButtonStyle(
-                        shape: MaterialStateProperty.all(
-                          const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(12),
+                    const SizedBox(height: 20),
+                    Container(
+                      width: 150,
+                      height: 45,
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.bottomLeft,
+                          end: Alignment.topRight,
+                          colors: [Color(0xFF4B7BFF), Color(0xFF46D9FF)],
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                      ),
+                      child: ElevatedButton(
+                        onPressed: () => Navigator.pop(context, false),
+                        style: ButtonStyle(
+                          shape: MaterialStateProperty.all(
+                            const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(12),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      child: Center(
-                        child: Text(
-                          'OK',
-                          style: Theme.of(context).textTheme.labelLarge,
+                        child: Center(
+                          child: Text(
+                            'OK',
+                            style: Theme.of(context).textTheme.labelLarge,
+                          ),
                         ),
                       ),
-                    ),
-                  )
-                ],
+                    )
+                  ],
+                ),
               ),
             ),
           ),

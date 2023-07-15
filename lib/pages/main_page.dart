@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import '../components/view.dart';
 import 'view.dart';
@@ -17,7 +16,7 @@ final TextEditingController _searchController = TextEditingController();
 
 class _MainPageState extends State<MainPage> {
   List<Note> foundList = [];
-  final note_box = Hive.box('note_box');
+  NoteData noteData = NoteData();
 
   @override
   void initState() {
@@ -38,7 +37,7 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  void onChange(String text) {
+  void onSearchNoteChange(String text) {
     setState(() {
       List<Note> result = [];
       if (text.isEmpty) {
@@ -83,7 +82,7 @@ class _MainPageState extends State<MainPage> {
 
               // * search text flied
               TextFieldWidget(
-                onChanged: (text) => onChange(text),
+                onChanged: (text) => onSearchNoteChange(text),
                 controller: _searchController,
                 hintText: 'Search...',
                 icon: Icons.search_rounded,
@@ -100,9 +99,7 @@ class _MainPageState extends State<MainPage> {
               const SizedBox(height: 10),
 
               // * all notes
-              Expanded(
-                child: listViewMethod(value),
-              ),
+              Expanded(child: listViewMethod(value)),
             ],
           ),
         ),
@@ -115,7 +112,7 @@ class _MainPageState extends State<MainPage> {
                   title: titleController.text,
                   content: contentController.text,
                   id: foundList.length,
-                  dateTime: DateTime.now().toString(),
+                  dateTime: '',
                 ),
               ),
             ),
@@ -140,7 +137,7 @@ class _MainPageState extends State<MainPage> {
             goToPage(
               NotePage(
                 isNewNote: false,
-                note: foundList[index],
+                note: value.getAllNotes()[index],
               ),
             );
           },
@@ -151,7 +148,7 @@ class _MainPageState extends State<MainPage> {
             ],
           ),
           title: Text(
-            foundList[index].title,
+            value.getAllNotes()[index].title,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -161,11 +158,9 @@ class _MainPageState extends State<MainPage> {
             overflow: TextOverflow.ellipsis,
           ),
           trailing: IconButton(
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-            onPressed: () => setState(() {
-              value.deleteNote(foundList[index]);
-            }),
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            onPressed: () => value.deleteNote(foundList[index]),
             icon: const Icon(Icons.delete_rounded),
           ),
         ),

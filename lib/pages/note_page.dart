@@ -36,11 +36,6 @@ class _NotePageState extends State<NotePage> {
     super.initState();
   }
 
-
-
-  
-  
-
   void goToPage(Widget page) {
     Navigator.push(
       context,
